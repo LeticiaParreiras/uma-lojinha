@@ -5,7 +5,7 @@ import { LoginDto } from './dto/create-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
-
+import { JwtService } from '@nestjs/jwt';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
 
@@ -16,7 +16,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-
+    private readonly JwtService: JwtService,
   ) {}
   async register(dto: ResgisterDto) {
     const existingUser = await this.userRepository.findOne({
@@ -54,7 +54,7 @@ export class AuthService {
     if (storedHash !== hash.toString('hex')) {
       return new BadRequestException('Credenciais inválidas');
     }
-    const { password: _, ...result } = user;
-    return result;
+    const payload = {username: user.username, sub: user.id}
+    return {accessToken: this.JwtService.sign(payload)}
   }
 }

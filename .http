@@ -16,3 +16,7 @@ Content-Type: application/json
     "email": "lety3@gmail.com",
     "password": "123456"
 }
+
+###
+GET http://localhost:3000/user
+Authorization: Bearer #token aqui
