@@ -23,7 +23,7 @@ export class AuthService {
       where: { email: dto.email },
     });
     if (existingUser) {
-      return new BadRequestException('Email already in use');
+      return new BadRequestException('Email already invalid');
     }
     // salt e hash da senha
     const salt = randomBytes(8).toString('hex');
