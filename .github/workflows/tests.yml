@@ -1,0 +1,41 @@
+name: Backend test e2e
+
+#contexto que esse flow vai ser executado
+on: [push]
+
+jobs:
+  test:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node-version: [18, 20]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Change to Backend
+        run: cd Backend
+
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix['node-version'] }}
+        
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Run e2e tests
+        working-directory: ./backend
+        run: npm run test:e2e
