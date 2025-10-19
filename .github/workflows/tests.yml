@@ -34,4 +34,6 @@ jobs:
 
       - name: Run e2e tests
         working-directory: ./backend
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: npm run test:e2e
