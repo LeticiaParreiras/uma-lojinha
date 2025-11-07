@@ -23,7 +23,7 @@ export class AuthService {
       where: { email: dto.email },
     });
     if (existingUser) {
-      return new BadRequestException('Email already invalid');
+      throw new BadRequestException('Email already invalid');
     }
     // salt e hash da senha
     const salt = randomBytes(8).toString('hex');
@@ -46,7 +46,7 @@ export class AuthService {
       where: { email: dto.email },
     });
     if (!user) {
-      return new BadRequestException('Credenciais inválidas');
+      throw new BadRequestException('Credenciais inválidas');
     }
     // verificando a senha
     const [salt, storedHash] = user.password.split('.'); 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -32,14 +32,14 @@ export class ProductsService {
 
   async update(id: string, dto: UpdateProductDto) {
     const product = await this.productsRepository.findOneBy({ id });
-    if (!product) return null;
+    if (!product) throw new BadRequestException('invalid product');
     this.productsRepository.merge( product, dto );
     return this.productsRepository.save(product);
   }
 
   async remove(id: string) {
     const product = await this.productsRepository.findOneBy({ id });
-    if (!product) return null;
+    if (!product) throw new BadRequestException('invalid product');
     return this.productsRepository.remove(product);
   }
 }
