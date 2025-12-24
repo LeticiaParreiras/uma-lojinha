@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
-import { BeforeInsert, Column, Entity, PrimaryColumn } from 'typeorm';
+import { Cart } from 'src/cart/entities/cart.entity';
+import { BeforeInsert, Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
 
 @Entity("users")
 export class User {
@@ -14,6 +15,11 @@ export class User {
 
     @Column()
     password: string;
+
+    @OneToOne(() => Cart, (Cart) => Cart.user, {
+      cascade: true
+    })
+    Cart : Cart;
 
     @BeforeInsert()
     generateID(){

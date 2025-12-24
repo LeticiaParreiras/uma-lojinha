@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
-import { BeforeInsert, Column, Entity, PrimaryColumn } from "typeorm";
-
+import { CartItem } from "src/cart/entities/items.entity";
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 
 @Entity ("products")
 export class Product 
@@ -14,11 +14,15 @@ export class Product
     @Column()
     description: string;
     
-    @Column("int")
+    @Column('decimal', { precision: 10, scale: 2 })
     price: number;
 
     @Column()
     quantity: number;
+
+    @OneToMany(()=>CartItem, (CartItem) => CartItem.Product)
+    CartItem: CartItem[];
+
     
     @BeforeInsert()
     generateID(){
