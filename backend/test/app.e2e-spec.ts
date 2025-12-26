@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { faker } from '@faker-js/faker';
+import { ConfigService } from '@nestjs/config';
 
 export interface AuthRes {
   accessToken: string;
@@ -30,21 +30,39 @@ describe('API Tests (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        TypeOrmModule.forRoot({
-          type: 'sqlite',
-          database: 'test.sqlite', // banco específico para testes
-          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-          synchronize: true,
-          dropSchema: true // limpa o banco a cada execução
-        }),
-        AppModule
-      ],
-    }).compile();
+      imports: [AppModule],
+    })
+      .overrideProvider(ConfigService)
+      .useValue({
+        get: (key: string) => {
+          const config = {
+            DB_TYPE: 'sqlite',
+            DB_DATABASE: ':memory:',
+            DB_SYNCHRONIZE: true,
+            JWT_SECRET: 'test-secret-key',
+          };
+          return config[key];
+        },
+        getOrThrow: (key: string) => {
+          const config = {
+            DB_TYPE: 'sqlite',
+            DB_DATABASE: ':memory:',
+            DB_SYNCHRONIZE: true,
+            JWT_SECRET: 'test-secret-key',
+          };
+          const value = config[key];
+          if (value === undefined) {
+            throw new Error(`Configuration key ${key} is not defined`);
+          }
+          return value;
+        },
+      })
+      .compile();
+
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
-  });
+  }, 30000);
 
   afterAll(async () => {
     // Limpa todos os produtos criados
