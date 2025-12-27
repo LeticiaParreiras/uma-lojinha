@@ -36,4 +36,7 @@ jobs:
         working-directory: ./backend
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DB_TYPE: sqlite
+          DB_DATABASE: ':memory:'
+          DB_SYNCHRONIZE: true
         run: npm run test:e2e
