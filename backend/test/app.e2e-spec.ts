@@ -28,36 +28,13 @@ describe('API Tests (e2e)', () => {
 
   let createdProducts: Product[] = [];
 
-  beforeAll(async () => {
+beforeAll(async () => {
+    // ✅ Garante que está em modo teste
+    process.env.NODE_ENV = 'test';
+    
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    })
-      .overrideProvider(ConfigService)
-      .useValue({
-        get: (key: string) => {
-          const config = {
-            DB_TYPE: 'sqlite',
-            DB_DATABASE: ':memory:',
-            DB_SYNCHRONIZE: true,
-            JWT_SECRET: 'test-secret-key',
-          };
-          return config[key];
-        },
-        getOrThrow: (key: string) => {
-          const config = {
-            DB_TYPE: 'sqlite',
-            DB_DATABASE: ':memory:',
-            DB_SYNCHRONIZE: true,
-            JWT_SECRET: 'test-secret-key',
-          };
-          const value = config[key];
-          if (value === undefined) {
-            throw new Error(`Configuration key ${key} is not defined`);
-          }
-          return value;
-        },
-      })
-      .compile();
+    }).compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
@@ -65,16 +42,10 @@ describe('API Tests (e2e)', () => {
   }, 30000);
 
   afterAll(async () => {
-    // Limpa todos os produtos criados
-    for (const id of createdProducts) {
-      await request(app.getHttpServer())
-        .delete(`/products/${id}`)
-        .set('Authorization', `Bearer ${authToken}`);
+    if (app) {
+      await app.close();
     }
-    createdProducts = []
-    await app.close();
   });
-
   describe('App', () => {
     it('/ (GET)', () => {
       return request(app.getHttpServer())
