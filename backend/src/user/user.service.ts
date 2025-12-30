@@ -14,13 +14,6 @@ export class UserService {
 
   findOne(user: CurrentUserDto) {
     return `this user name: ${user.username}`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+ 
+}
 }

@@ -23,6 +23,6 @@ import { Cart } from 'src/cart/entities/cart.entity';
     PassportModule,
   ],
   providers: [AuthService, JwtStrategy],
-  exports: [JwtStrategy]
+  exports: [JwtStrategy, JwtModule, AuthService]
 })
 export class AuthModule {}

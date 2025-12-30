@@ -2,6 +2,10 @@ import { nanoid } from 'nanoid';
 import { Cart } from 'src/cart/entities/cart.entity';
 import { BeforeInsert, Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
 
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin',
+}
 @Entity("users")
 export class User {
     @PrimaryColumn()
@@ -15,6 +19,12 @@ export class User {
 
     @Column()
     password: string;
+
+    @Column({
+    type: 'varchar',
+    default: UserRole.USER
+  })
+    role: UserRole;
 
     @OneToOne(() => Cart, (Cart) => Cart.user, {
       cascade: true

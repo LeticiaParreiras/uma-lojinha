@@ -65,7 +65,8 @@ export class AuthService {
     if (storedHash !== hash.toString('hex')) {
       return new BadRequestException('Credenciais inválidas');
     }
-    const payload = {username: user.username, sub: user.id}
+    const payload = {username: user.username, sub: user.id, role: user.role}
+
     return {accessToken: this.JwtService.sign(payload)}
   }
 }
