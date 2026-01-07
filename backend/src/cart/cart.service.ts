@@ -69,7 +69,8 @@ export class CartService {
       throw new NotFoundException('Product not found')
     }
     let cartItem = await this.items.findOne({
-      where:{ Cart: cart, Product: product}
+      where:{ Cart: cart, Product: product},
+      relations: ['Product' ]
     })
     //Se ja tiver o produto no carrinho, atualiza
     if (cartItem){
