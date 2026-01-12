@@ -13,7 +13,10 @@ export class UserService {
   ) {}
 
   findOne(user: CurrentUserDto) {
-    return `this user name: ${user.username}`;
+   return this.userRepository.findOne({
+      where: {id: user.userId},
+    });
+  }
  
-}
+
 }

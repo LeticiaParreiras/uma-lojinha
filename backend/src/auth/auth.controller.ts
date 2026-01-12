@@ -12,6 +12,10 @@ export class AuthController {
 register(@Body() ResgisterDto: ResgisterDto) {
   return this.authService.register(ResgisterDto);
 }
+@Post('/admin/register')
+crateAdminUser(@Body() ResgisterDto: ResgisterDto) {
+  return this.authService.crateAdminUser(ResgisterDto);
+}
 @Post('/login')
 async login(@Body() loginDto: LoginDto) {
   return await this.authService.login(loginDto);

@@ -3,7 +3,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ResgisterDto } from './dto/create-auth.dto';
 import { LoginDto } from './dto/create-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../user/entities/user.entity';
+import { User, UserRole } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
@@ -47,6 +47,30 @@ export class AuthService {
       CartItems: []
     })
     await this.cartRepository.save(cart)
+    // escodendo a senha no retorno
+    const { password: _, ...result } = user;
+    return result;
+  }
+  async crateAdminUser(dto: ResgisterDto) {
+    const existingUser = await this.userRepository.findOne({
+      where: { email: dto.email },
+    });
+    if (existingUser) {
+      throw new BadRequestException('Email invalid');
+    }
+    // salt e hash da senha
+    const salt = randomBytes(8).toString('hex');
+    const hash = await scrypt(dto.password, salt, 32) as Buffer;
+    const saltedHash = salt + '.' + hash.toString('hex');
+
+    //criando usuario
+    const user = this.userRepository.create({
+    username: dto.username,
+    email: dto.email,
+    password: saltedHash,
+    role: UserRole.ADMIN,
+    });
+     await this.userRepository.save(user);
     // escodendo a senha no retorno
     const { password: _, ...result } = user;
     return result;

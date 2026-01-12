@@ -115,14 +115,11 @@ beforeAll(async () => {
     it('/auth/register (POST) - deve criar e transformar em admin', async () => {
       // 1. Cria o usuário via API
       const registerRes = await request(app.getHttpServer())
-        .post('/auth/register')
+        .post('/auth/admin/register')
         .send(testAdmin)
         .expect(201);
-
-      const userId = registerRes.body.id;
-
-      // 2. Muda o role diretamente no banco (SQLite)
-      await userRepo.update(userId, { role: UserRole.ADMIN});
+      expect(registerRes.body).toHaveProperty('id');
+      expect(registerRes.body.role).toBe('admin');
 
       // 3. Agora, ao fazer login, o token terá privilégios de admin
       const loginRes = await request(app.getHttpServer())
