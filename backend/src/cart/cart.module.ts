@@ -12,8 +12,9 @@ import { AuthModule } from 'src/auth/auth.module';
   controllers: [CartController],
   providers: [CartService],
   imports: [
-    TypeOrmModule.forFeature([User, Cart, CartItem, Product
+    TypeOrmModule.forFeature([User, Cart, CartItem, Product,
     ]), AuthModule
-  ]
+  ],
+  exports: [CartService],
 })
 export class CartModule {}

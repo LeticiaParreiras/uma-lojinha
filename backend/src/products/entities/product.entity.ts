@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import { CartItem } from "src/cart/entities/items.entity";
+import { OrderItem } from "src/order/entities/items.entity";
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 
 @Entity ("products")
@@ -22,6 +23,9 @@ export class Product
 
     @OneToMany(()=>CartItem, (CartItem) => CartItem.Product)
     CartItem: CartItem[];
+
+    @OneToMany(() => OrderItem, (orderItem) => orderItem.Product)
+    orderItem: OrderItem[];
 
     
     @BeforeInsert()

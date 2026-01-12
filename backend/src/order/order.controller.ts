@@ -1,15 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { cepApi } from './dto/address.dto';
+import { CurrentUserDto } from 'src/auth/dto/current-user.dto';
+import { CurrentUser } from 'src/auth/current-user.decorator';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  @Post('address/cep')
+  @UseGuards(JwtAuthGuard)
+  getAddrressByCep(@Body() dto: cepApi) {
+    return this.orderService.findAddressByCep(dto);
+  }
+
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  @UseGuards(JwtAuthGuard)
+  create(@Body() createOrderDto: CreateOrderDto, @CurrentUser() user: CurrentUserDto) {
+    
+    return this.orderService.create(createOrderDto, user);
+  }
+  @Post('payment/:orderId')
+  @UseGuards(JwtAuthGuard)
+  createPayment(@Param('orderId') orderId: string) {
+    return this.orderService.createPayment(orderId);
   }
 
   @Get()

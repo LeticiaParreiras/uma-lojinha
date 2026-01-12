@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid';
 import { Cart } from 'src/cart/entities/cart.entity';
-import { BeforeInsert, Column, Entity, OneToOne, PrimaryColumn } from 'typeorm';
+import { Order } from 'src/order/entities/order.entity';
+import { BeforeInsert, Column, Entity, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 
 export enum UserRole {
   USER = 'user',
@@ -30,6 +31,9 @@ export class User {
       cascade: true
     })
     Cart : Cart;
+
+    @OneToMany(() => Order, (orders) => orders.user)
+    orders: Order[];
 
     @BeforeInsert()
     generateID(){
