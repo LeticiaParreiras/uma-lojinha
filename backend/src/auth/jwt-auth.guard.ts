@@ -16,7 +16,7 @@ export class JwtAuthGuard  implements CanActivate {
       throw new UnauthorizedException('No token provided');
     }
 
-    const payload = this.jwtService.verify(token);2
+    const payload = this.jwtService.verify(token);
 
     // Sempre adiciona o payload do JWT ao request.user
     request.user = payload;
