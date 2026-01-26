@@ -23,11 +23,12 @@ export class OrderController {
     
     return this.orderService.create(createOrderDto, user);
   }
+  /*
   @Post('payment/:orderId')
   @UseGuards(JwtAuthGuard)
   createPayment(@Param('orderId') orderId: string) {
     return this.orderService.createPayment(orderId);
-  }
+  }*/
 
   @Get()
   findAll() {

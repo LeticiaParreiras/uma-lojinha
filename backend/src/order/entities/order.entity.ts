@@ -36,6 +36,9 @@ export class Order {
 
       @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {cascade: true})
       orderItems: OrderItem[];
+      @OneToOne(() => Payment, (payment) => payment.order, {cascade: true})   
+      @JoinColumn({name: 'paymentId'})
+      payment: Payment;
 
       @BeforeInsert()
           generateID(){
