@@ -37,7 +37,7 @@ export class OrderService {
     // 1. Busca o carrinho e seus itens
     const cart = await this.CartService.findOne(user);
 
-    // 2. Prepara os objetos dos ITENS (apenas cria na memória, sem salvar ainda)
+    // 2. Prepara os objetos dos ITENS 
     const orderItemsEntities = cart.CartItems.map((item) => {
         return this.orderItem.create({
             Product: item.Product,
@@ -46,7 +46,7 @@ export class OrderService {
         });
     });
 
-    // 3. Prepara o objeto do ENDEREÇO (memória)
+    // 3. Prepara o objeto do ENDEREÇO 
     const addressEntity = this.address.create({
         ...createOrderDto.address
     });

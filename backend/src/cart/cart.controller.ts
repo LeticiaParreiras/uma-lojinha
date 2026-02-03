@@ -7,35 +7,43 @@ import { ItemDto } from './dto/items.dto';
 import { CartResponse } from './dto/cart-response';
 import { ItemResponse } from './dto/item-response';
 import { itemUpdate } from './dto/item-update';
+import { ApiBearerAuth, ApiOperation, ApiParam } from '@nestjs/swagger';
 
+@ApiBearerAuth('BearerAuth')
 @Controller('cart')
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  //Cria carrinho
-  @Post()
-  @UseGuards(JwtAuthGuard)
-  async create(@CurrentUser() user: CurrentUserDto) {
-    const cart = await this.cartService.create(user);
-    return CartResponse.fromEntity(cart)
-  }
-  //Acha carrinho do usuario
   @Get()
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Get current user cart',
+  })
   async findOne(@CurrentUser() user: CurrentUserDto) {
     const cart = await this.cartService.findOne(user);
     return CartResponse.fromEntity(cart)
   }
-  // Adiciona item no carrinho
+ 
+
   @Post('new-item')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Add new item in cart'
+  })
   async addItem(@CurrentUser() user: CurrentUserDto, @Body()item : ItemDto){
     const itemResponse = await this.cartService.addItem(item, user)
     return ItemResponse.fromEntity(itemResponse)
   }
-  //Atualiza item do carrinho
   @Patch(':itemId')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Update cart item'
+  })
+  @ApiParam({
+    name: 'itemId',
+    description: 'cart item id',
+    example: 'item_...'
+  })
   async update(@CurrentUser() user: CurrentUserDto, @Param('itemId') itemId : string ,@Body() itemDto: itemUpdate) {
     const itemResponse = await this.cartService.updateItem(user,itemId, itemDto );
     return ItemResponse.fromEntity(itemResponse)
@@ -43,6 +51,14 @@ export class CartController {
 
   @Delete(':itemId')
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: 'Delete cart item'
+  })
+  @ApiParam({
+    name: 'itemId',
+    description: 'cart item id',
+    example: 'item_...'
+  })
   remove(@Param('itemId') itemId: string, @CurrentUser() user: CurrentUserDto) {
     return this.cartService.deleteItem(user, itemId);
   }
