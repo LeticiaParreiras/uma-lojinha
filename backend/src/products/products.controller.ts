@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
-import { ApiBearerAuth, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -23,11 +24,12 @@ export class ProductsController {
   }
 
   @Get()
-  @ApiOperation({
-      summary: "Get all products",
-    })
-  findAll() {
-    return this.productsService.findAll();
+  @ApiOperation({summary: "Get all products",})
+  @ApiQuery({name: 'offset', required: false, example: 0})
+  @ApiQuery({name: 'limit', required: false, example: 10})
+  @ApiQuery({name: 'search', required: false, example: ""})
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.productsService.findAll(paginationDto);
   }
 
   @Get(':productId')
