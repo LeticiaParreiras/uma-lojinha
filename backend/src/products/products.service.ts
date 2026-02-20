@@ -52,4 +52,6 @@ export class ProductsService {
     if (!product) throw new BadRequestException('invalid product');
     return this.productsRepository.remove(product);
   }
+
+  
 }

@@ -2,6 +2,7 @@ import { nanoid } from "nanoid";
 import { CartItem } from "src/cart/entities/items.entity";
 import { OrderItem } from "src/order/entities/items.entity";
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import { ProductImage } from "./image.entity";
 
 @Entity ("products")
 export class Product 
@@ -26,6 +27,9 @@ export class Product
 
     @OneToMany(() => OrderItem, (orderItem) => orderItem.Product)
     orderItem: OrderItem[];
+
+    @OneToMany(() => ProductImage, (productImage) => productImage.product)
+    images: ProductImage
 
     
     @BeforeInsert()
