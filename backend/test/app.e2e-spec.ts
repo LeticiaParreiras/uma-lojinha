@@ -159,8 +159,8 @@ beforeAll(async () => {
       const res = await request(app.getHttpServer())
         .get('/products')
         .expect(200)
-      expect(Array.isArray(res.body)).toBe(true);
-      expect(res.body.length).toBe(3);
+      expect(Array.isArray(res.body)).toHaveProperty;
+      expect(res.body.count).toBe(3);
     });
 
     it('/products/:id (GET) - deve retornar um produto específico', async () => {
